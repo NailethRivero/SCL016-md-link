@@ -16,14 +16,14 @@ const fileExt = (route) => path.extname(route); //verifying file's extension
 //looking  for md files
 const getMdFiles = (route) => {
   let arrFiles = [];
-  const routeAbsolute = getAbsolutePath(route);
-  if (isFile(routeAbsolute)) { 
-    if (fileExt(routeAbsolute) === '.md') {
-      arrFiles.push(routeAbsolute);
+  const absoluteRoute = getAbsolutePath(route);
+  if (isFile(absoluteRoute)) { 
+    if (fileExt(absoluteRoute) === '.md') {
+      arrFiles.push(absoluteRoute);
     }
   } else { 
-    readDirectory(routeAbsolute).forEach((file) => {
-      const newRouteFile = `${routeAbsolute}/${file}`;
+    readDirectory(absoluteRoute).forEach((file) => {
+      const newRouteFile = `${absoluteRoute}/${file}`;
       const allFiles = getMdFiles(newRouteFile);
       arrFiles = arrFiles.concat(allFiles);
     });
@@ -53,8 +53,8 @@ const getLinks = (route) => new Promise((res, rej) => {
         return ({ href, text, file });
       });
 
-      const getLinksWithUrl = links.filter((link) => !link.href.startsWith(internalLinks));
-      res(getLinksWithUrl);
+      const getUrlLinks = links.filter((link) => !link.href.startsWith(internalLinks));
+      res(getUrlLinks);
     } else {
       res([]);
     }
@@ -83,7 +83,7 @@ const mdLinks = (route, { validate }) => {
         return res;
       });
   }
-  throw Error('Verifica el path, ruta no encontrada');
+  throw Error('Path not found');
 };
 
 //Validate Links 
@@ -107,8 +107,8 @@ const validateLinks = (arrLinks) => {
   return Promise.all(arrPromises);
 };
 
-/*mdLinks("./TEST.md", { validate: true }).then((res) => {
-  console.log(res);
-});*/
+//mdLinks("./TEST.md", { validate: true }).then((res) => {
+//  console.log(res);
+//});
 
   module.exports = mdLinks
